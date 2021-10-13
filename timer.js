@@ -1,8 +1,6 @@
-
-
 class CountdownTimer {
-  constructor(targetDate, markup) {
-    this.markup = markup;
+  constructor({ selector, targetDate }) {
+    this.selector = selector;
     this.targetDate = targetDate;
     this.intId = null;
     this.deltaTime = 0;
@@ -12,21 +10,18 @@ class CountdownTimer {
     this.intId = setInterval(() => {
       const currentDate = new Date();
       this.deltaTime = this.targetDate - currentDate;
-      const{days, hours,mins,secs }= this.getTimeComponents(this.deltaTime);
-      this.insertValues(days,hours,mins,secs );
+      const { days, hours, mins, secs } = this.getTimeComponents(
+        this.deltaTime
+      );
+      this.insertValues(days, hours, mins, secs);
 
- 
-         if (this.deltaTime <= 0) {
+      if (this.deltaTime <= 0) {
         clearInterval(this.intId);
-        
-     this.insertValues(0,0,0,0)
-    }
-   
-    }, 1000);
-      
- 
-  }
 
+        this.insertValues(0, 0, 0, 0);
+      }
+    }, 1000);
+  }
 
   pad(value) {
     return String(value).padStart(2, '0');
@@ -44,23 +39,26 @@ class CountdownTimer {
     return { days, hours, mins, secs };
   }
 
-  insertValues(d, h, m, s, msg) {
-    const { days, hours, mins, secs } = this.markup;
-    days.textContent = `${d}`;
-    hours.textContent = `${h}`;
-    mins.textContent = `${m}`;
-      secs.textContent = `${s}`;
-    
+  insertValues(d, h, m, s) {
+    const markup = document.querySelector(this.selector);
+
+    markup.querySelector('[data-value="days"]').textContent = `${d}`;
+    markup.querySelector('[data-value="hours"]').textContent = `${h}`;
+    markup.querySelector('[data-value="mins"]').textContent = `${m}`;
+    markup.querySelector('[data-value="secs"]').textContent = `${s}`;
   }
 }
 
-const timer = new CountdownTimer(new Date('Jan 01, 2022'), {
-  days: document.querySelector('[data-value="days"]'),
-  hours: document.querySelector('[data-value="hours"]'),
-  mins: document.querySelector('[data-value="mins"]'),
-    secs: document.querySelector('[data-value="secs"]'),
-
+const timer = new CountdownTimer({
+  selector: '#timer-1',
+  targetDate: new Date('Jan 01, 2022'),
 });
 
+const newTimer = new CountdownTimer({
+  selector: '#timer-2',
+  targetDate: new Date('Apr 03, 2022'),
+});
 
-timer.start()
+timer.start();
+
+newTimer.start();
